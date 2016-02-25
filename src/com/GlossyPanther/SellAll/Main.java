@@ -427,8 +427,11 @@ public class Main extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e)
 	{
-		if (perms.playerHas(e.getPlayer(), "sellall.set") && updateAvailable)
-			e.getPlayer().sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " A new update is available!");
+		if (perms.playerHas(e.getPlayer(), "sellall.set"))
+		{
+			if (checkForUpdate())
+				e.getPlayer().sendMessage(ChatColor.BLUE + "[Sell All] " + ChatColor.RED + "Update available!");
+		}
 		if (!getConfig().isSet("PlayerMultipliers." + e.getPlayer().getUniqueId()))
 		{
 			getConfig().set("PlayerMultipliers." + e.getPlayer().getUniqueId(), 1.0);
