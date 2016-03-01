@@ -286,6 +286,7 @@ public class Main extends JavaPlugin implements Listener {
         return perms != null;
     }
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e)
 	{
@@ -334,7 +335,18 @@ public class Main extends JavaPlugin implements Listener {
 						newAmountToGive = newAmountToGive * playerMult;
 					econ.depositPlayer(player, newAmountToGive);
 					player.updateInventory();
-					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1.0F, 1.5F);
+					Sound sound = null;
+					for (Sound s : Sound.values())
+					{
+						if (s.toString().equalsIgnoreCase("orb_pickup"))
+						{
+							sound = s;
+							break;
+						}
+					}
+					if (sound == null)
+						sound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+					player.playSound(player.getLocation(), sound, 1.0F, 1.5F);
 					player.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "SOLD: " + ChatColor.DARK_GREEN.toString() + quantityFound + "x " + sellingMaterial.name() + ChatColor.AQUA.toString() + " for $" + moneyFormat.format(newAmountToGive));
 					return;
 				}
@@ -402,7 +414,7 @@ public class Main extends JavaPlugin implements Listener {
 	{
 		try 
 		{
-			logger.info("Checking for a new version...");
+			logger.info("[SellAll] Checking for a new version...");
 			URL url = new URL("https://raw.githubusercontent.com/GlossyPanther/SellAll/master/version.txt");
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			String str;
@@ -410,7 +422,7 @@ public class Main extends JavaPlugin implements Listener {
 			{
 				if (!getDescription().getVersion().equalsIgnoreCase(str))
 				{
-					logger.info("New update available!");
+					logger.info("[SellAll] New update available!");
 					logger.info("Your version is " + getDescription().getVersion());
 					logger.info("The latest version is " + str);
 					return true;
