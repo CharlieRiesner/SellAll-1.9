@@ -21,6 +21,7 @@ public class NoWorldGuardListeners implements Listener {
 			{
 	           p.getInventory().addItem(item);
 	        }
+			p.giveExp(e.getExpToDrop());
 	        e.setCancelled(true);
 	        e.getBlock().setType(Material.AIR);
 	        

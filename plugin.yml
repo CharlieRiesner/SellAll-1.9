@@ -1,6 +1,6 @@
 name: SellAll
 main: com.GlossyPanther.SellAll.Main
-version: 2.4
+version: 2.4.1
 author: CharlieRiesner
 depend: [Vault]
 softdepend: [worldguard]
