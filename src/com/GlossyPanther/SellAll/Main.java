@@ -286,7 +286,6 @@ public class Main extends JavaPlugin implements Listener {
         return perms != null;
     }
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e)
 	{
@@ -296,7 +295,7 @@ public class Main extends JavaPlugin implements Listener {
 		{
 			Player player = e.getPlayer();
 			Sign sign = (Sign)e.getClickedBlock().getState();
-			if ((perms.playerHas(player, "sellall.break") && player.getItemInHand().getType() == Material.TNT) && (sign.getLine(0).equalsIgnoreCase(ChatColor.BLUE + "[sell all]") || sign.getLine(0).equalsIgnoreCase(ChatColor.RED + "[sell all]")))
+			if ((perms.playerHas(player, "sellall.break") && player.getInventory().getItemInMainHand().getType() == Material.TNT) && (sign.getLine(0).equalsIgnoreCase(ChatColor.BLUE + "[sell all]") || sign.getLine(0).equalsIgnoreCase(ChatColor.RED + "[sell all]")))
 			{
 				e.setCancelled(true);
 				e.getClickedBlock().setType(Material.AIR);
@@ -335,18 +334,7 @@ public class Main extends JavaPlugin implements Listener {
 						newAmountToGive = newAmountToGive * playerMult;
 					econ.depositPlayer(player, newAmountToGive);
 					player.updateInventory();
-					Sound sound = null;
-					for (Sound s : Sound.values())
-					{
-						if (s.toString().equalsIgnoreCase("orb_pickup"))
-						{
-							sound = s;
-							break;
-						}
-					}
-					if (sound == null)
-						sound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-					player.playSound(player.getLocation(), sound, 1.0F, 1.5F);
+					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.5F);
 					player.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "SOLD: " + ChatColor.DARK_GREEN.toString() + quantityFound + "x " + sellingMaterial.name() + ChatColor.AQUA.toString() + " for $" + moneyFormat.format(newAmountToGive));
 					return;
 				}
@@ -375,10 +363,10 @@ public class Main extends JavaPlugin implements Listener {
 					player.sendMessage(ChatColor.RED + "Unknown material on line 3!");
 					return;
 				}
-				int sellingAmount = 0;
+				double sellingAmount = 0;
 				try
 				{
-					sellingAmount = Integer.parseInt(e.getLine(3));
+					sellingAmount = Double.parseDouble(e.getLine(3));
 				}
 				catch (Exception except)
 				{
@@ -387,7 +375,7 @@ public class Main extends JavaPlugin implements Listener {
 					return;
 				}
 				String sellingMaterialLine = sellingMaterial.name();
-				String sellingPriceLine = "$" + sellingAmount + " /ea";
+				String sellingPriceLine = "$" + moneyFormat.format(sellingAmount) + " /ea";
 				e.setLine(0, ChatColor.BLUE + "[Sell All]");
 				e.setLine(1, "ALL");
 				e.setLine(2, sellingMaterialLine);
@@ -415,7 +403,7 @@ public class Main extends JavaPlugin implements Listener {
 		try 
 		{
 			logger.info("[SellAll] Checking for a new version...");
-			URL url = new URL("https://raw.githubusercontent.com/GlossyPanther/SellAll/master/version.txt");
+			URL url = new URL("https://raw.githubusercontent.com/GlossyPanther/SellAll-1.9/master/version.txt");
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			String str;
 			while ((str = br.readLine()) != null)
