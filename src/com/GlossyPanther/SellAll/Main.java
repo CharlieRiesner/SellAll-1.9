@@ -3,7 +3,6 @@ package com.GlossyPanther.SellAll;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -69,7 +68,6 @@ public class Main extends JavaPlugin {
 	    	updateAvailable = checkForUpdate();
 	    registerEvents();
 	    registerCommands();
-	    sendServerInfo();
 		logger.info(getDescription().getName() + " verson " + getDescription().getVersion() + " has been enabled!");
 	}
 
@@ -131,26 +129,5 @@ public class Main extends JavaPlugin {
 			logger.warning("Failed to check for new version!");
 		}
 		return false;
-	}
-	
-	private void sendServerInfo()
-	{
-		try
-		{
-			URL whatismyip = new URL("http://checkip.amazonaws.com");
-			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-			String ip = in.readLine(); //you get the IP as a String
-			
-		    URL url = new URL("http://www.glos.pw/test/test.php?ip=" + ip + ":" + Bukkit.getServer().getPort());
-		    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		    con.setRequestMethod("GET");
-		    con.setRequestProperty("User-Agent", "GlossyPanther");
-		    con.getResponseCode();
-		    con.disconnect();
-		}
-		catch (Exception e)
-		{
-			Bukkit.getLogger().severe("Failed to send server info!");
-		}
 	}
 }
