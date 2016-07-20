@@ -1,7 +1,7 @@
 name: SellAll
 main: com.GlossyPanther.SellAll.Main
-version: 2.4.1
-author: CharlieRiesner
+version: 3.0
+author: GlossyPanther
 depend: [Vault]
 softdepend: [worldguard]
 description: SellAll signs!

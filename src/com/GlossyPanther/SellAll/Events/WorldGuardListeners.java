@@ -1,4 +1,4 @@
-package com.GlossyPanther.SellAll;
+package com.GlossyPanther.SellAll.Events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.GlossyPanther.SellAll.Main;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -18,13 +19,18 @@ import net.md_5.bungee.api.ChatColor;
 
 public class WorldGuardListeners implements Listener {
 	
-	public WorldGuardPlugin WG = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+	WorldGuardPlugin WG = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+	Main plugin;
+	
+	public WorldGuardListeners (Main instance){
+        plugin = instance;
+    }
 	
 	@EventHandler
 	public void blockBreakWG(BlockBreakEvent e)
 	{
 		Player p = e.getPlayer();
-		if (Main.perms.playerHas(p, "sellall.autopickup") && Main.autopickupPlayers.contains(p))
+		if (plugin.perms.playerHas(p, "sellall.autopickup") && plugin.autopickupPlayers.contains(p))
 		{
 			RegionContainer container = WG.getRegionContainer();
 			RegionQuery query = container.createQuery();

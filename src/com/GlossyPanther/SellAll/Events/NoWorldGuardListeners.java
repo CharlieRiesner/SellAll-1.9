@@ -1,4 +1,4 @@
-package com.GlossyPanther.SellAll;
+package com.GlossyPanther.SellAll.Events;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,15 +7,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.GlossyPanther.SellAll.Main;
+
 import net.md_5.bungee.api.ChatColor;
 
 public class NoWorldGuardListeners implements Listener {
+	
+	Main plugin;
+	
+	public NoWorldGuardListeners (Main instance){
+        plugin = instance;
+    }
 
 	@EventHandler
 	public void blockBreakNoWG(BlockBreakEvent e)
 	{
 		Player p = e.getPlayer();
-		if (Main.perms.playerHas(p, "sellall.autopickup") && Main.autopickupPlayers.contains(p))
+		if (plugin.perms.playerHas(p, "sellall.autopickup") && plugin.autopickupPlayers.contains(p))
 		{
 			for(ItemStack item : e.getBlock().getDrops())
 			{
