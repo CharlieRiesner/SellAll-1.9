@@ -31,7 +31,7 @@ public class CommandUtility implements CommandExecutor {
 		{
 			if (args.length == 0 || args.length > 3)
 			{
-				player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.GREEN + " Created by GlossyPanther!");
+				player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.GREEN + " Created by GlossyPanther! (v" + plugin.getDescription().getVersion() + ")");
 				player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " View global multiplier" + ChatColor.RED + " /sellall global");
 				player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " View your multiplier" + ChatColor.RED + " /sellall player <player>");
 				if (plugin.perms.playerHas(player, "sellall.set"))
@@ -39,8 +39,8 @@ public class CommandUtility implements CommandExecutor {
 					player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " Set global multiplier" + ChatColor.RED + " /sellall global <amount>");
 					player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " Set player multiplier" + ChatColor.RED + " /sellall player <player> <amount>");
 					player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " Reload config file" + ChatColor.RED + " /sellall reload");
-					return true;
 				}
+				return true;
 			}
 			else if (args.length == 1)
 			{
@@ -93,7 +93,7 @@ public class CommandUtility implements CommandExecutor {
 					}
 					else
 					{
-						player.sendMessage("fail");
+						player.sendMessage(ChatColor.RED + "[" + ChatColor.BLUE + "SellAll" + ChatColor.RED + "]" + ChatColor.BLUE + " " + args[1] + ChatColor.BLUE + " is unknown!");
 						return true;
 					}
 				}
