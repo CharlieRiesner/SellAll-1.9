@@ -27,7 +27,7 @@ public class SignCreate implements Listener {
 		{
 			if (plugin.perms.playerHas(player, "sellall.create"))
 			{
-				Material sellingMaterial = Material.matchMaterial(e.getLine(2));
+				Material sellingMaterial = Material.matchMaterial(e.getLine(2).split(":")[0]);
 				if (sellingMaterial == null)
 				{
 					e.setLine(0, ChatColor.RED + "[Sell All]");
@@ -45,7 +45,10 @@ public class SignCreate implements Listener {
 					player.sendMessage(ChatColor.RED + "Unknown price on line 4!");
 					return;
 				}
-				String sellingMaterialLine = sellingMaterial.name();
+				String sellingMaterialDataValue = "";
+				if (e.getLine(2).split(":").length > 1)
+					sellingMaterialDataValue = ":" + e.getLine(2).split(":")[1];
+				String sellingMaterialLine = sellingMaterial.name() + sellingMaterialDataValue;
 				String sellingPriceLine = "$" + plugin.moneyFormat.format(sellingAmount) + " /ea";
 				e.setLine(0, ChatColor.BLUE + "[Sell All]");
 				e.setLine(1, "ALL");

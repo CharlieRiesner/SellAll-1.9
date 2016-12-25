@@ -40,38 +40,70 @@ public class PlayerInteract implements Listener {
 			{
 				e.setCancelled(true);
 				int quantityFound = 0;
-				Material sellingMaterial = Material.getMaterial(sign.getLine(2));
-				for (ItemStack is : player.getInventory())
+				Material sellingMaterial = Material.getMaterial(sign.getLine(2).split(":")[0]);
+				short dataValue;
+				if (sign.getLine(2).split(":").length > 1)
+					dataValue = Short.parseShort(sign.getLine(2).split(":")[1]);
+				else
+					dataValue = 0;
+				//ItemStack sellingStack = new ItemStack(sellingMaterial, 1, dataValue);
+				if (sellingMaterial != null)
 				{
-					if (is != null)
+					for (ItemStack is : player.getInventory())
 					{
-						if (is.getType() == sellingMaterial)
-							quantityFound += is.getAmount();
+						if (is != null)
+						{
+							if (dataValue != 0)
+							{
+								if (is.getType() == sellingMaterial && is.getDurability() == dataValue)
+								{
+									quantityFound += is.getAmount();
+									player.getInventory().remove(is);
+								}
+							}
+							else
+							{
+								if (is.getType() == sellingMaterial)
+								{
+									quantityFound += is.getAmount();
+									player.getInventory().remove(is);
+								}
+							}
+						}
+					}
+					if (quantityFound < 1)
+					{
+						if (dataValue != 0)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have any " + sellingMaterial.name() + ":" + dataValue + " to sell!");
+							return;
+						}
+						else
+						{
+							player.sendMessage(ChatColor.RED + "You do not have any " + sellingMaterial.name() + " to sell!");
+							return;
+						}
+					}
+					else
+					{
+						double pricePer = Double.parseDouble(sign.getLine(3).replace("$","").replace(" /ea", ""));
+						double amountToGive = quantityFound * pricePer;
+						Double globalMult = plugin.getConfig().getDouble("GlobalMultiplier");
+						Double playerMult = plugin.getConfig().getDouble("PlayerMultipliers." + player.getUniqueId());
+						double newAmountToGive = amountToGive;
+						if (globalMult != 1 && globalMult != 0)
+							newAmountToGive = newAmountToGive * globalMult;
+						if (playerMult != 1 && playerMult != 0)
+							newAmountToGive = newAmountToGive * playerMult;
+						plugin.econ.depositPlayer(player, newAmountToGive);
+						player.updateInventory();
+						player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.5F);
+						player.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "SOLD: " + ChatColor.DARK_GREEN.toString() + quantityFound + "x " + sellingMaterial.name() + ChatColor.AQUA.toString() + " for $" + plugin.moneyFormat.format(newAmountToGive));
+						return;
 					}
 				}
-				if (quantityFound < 1)
-				{
-					player.sendMessage(ChatColor.RED + "You do not have any " + sellingMaterial.name() + " to sell!");
-					return;
-				}
 				else
-				{
-					double pricePer = Double.parseDouble(sign.getLine(3).replace("$","").replace(" /ea", ""));
-					player.getInventory().remove(sellingMaterial);
-					double amountToGive = quantityFound * pricePer;
-					Double globalMult = plugin.getConfig().getDouble("GlobalMultiplier");
-					Double playerMult = plugin.getConfig().getDouble("PlayerMultipliers." + player.getUniqueId());
-					double newAmountToGive = amountToGive;
-					if (globalMult != 1 && globalMult != 0)
-						newAmountToGive = newAmountToGive * globalMult;
-					if (playerMult != 1 && playerMult != 0)
-						newAmountToGive = newAmountToGive * playerMult;
-					plugin.econ.depositPlayer(player, newAmountToGive);
-					player.updateInventory();
-					player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.5F);
-					player.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "SOLD: " + ChatColor.DARK_GREEN.toString() + quantityFound + "x " + sellingMaterial.name() + ChatColor.AQUA.toString() + " for $" + plugin.moneyFormat.format(newAmountToGive));
-					return;
-				}
+					player.sendMessage(ChatColor.RED + "An error occured! Contact a staff member!");
 			}
 			if (sign.getLine(0).equalsIgnoreCase(ChatColor.RED + "[Sell All]"))
 			{
