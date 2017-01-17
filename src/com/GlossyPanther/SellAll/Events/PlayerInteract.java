@@ -46,29 +46,15 @@ public class PlayerInteract implements Listener {
 					dataValue = Short.parseShort(sign.getLine(2).split(":")[1]);
 				else
 					dataValue = 0;
-				//ItemStack sellingStack = new ItemStack(sellingMaterial, 1, dataValue);
+				ItemStack sellingStack = new ItemStack(sellingMaterial, 64, dataValue);
 				if (sellingMaterial != null)
 				{
 					for (ItemStack is : player.getInventory())
 					{
 						if (is != null)
 						{
-							if (dataValue != 0)
-							{
-								if (is.getType() == sellingMaterial && is.getDurability() == dataValue)
-								{
-									quantityFound += is.getAmount();
-									player.getInventory().remove(is);
-								}
-							}
-							else
-							{
-								if (is.getType() == sellingMaterial)
-								{
-									quantityFound += is.getAmount();
-									player.getInventory().remove(is);
-								}
-							}
+							if (is.isSimilar(sellingStack))
+								quantityFound += is.getAmount();
 						}
 					}
 					if (quantityFound < 1)
@@ -86,6 +72,14 @@ public class PlayerInteract implements Listener {
 					}
 					else
 					{
+						for (ItemStack is : player.getInventory())
+						{
+							if (is != null)
+							{
+								if (is.isSimilar(sellingStack))
+									player.getInventory().remove(is);
+							}
+						}
 						double pricePer = Double.parseDouble(sign.getLine(3).replace("$","").replace(" /ea", ""));
 						double amountToGive = quantityFound * pricePer;
 						Double globalMult = plugin.getConfig().getDouble("GlobalMultiplier");
@@ -96,6 +90,7 @@ public class PlayerInteract implements Listener {
 						if (playerMult != 1 && playerMult != 0)
 							newAmountToGive = newAmountToGive * playerMult;
 						plugin.econ.depositPlayer(player, newAmountToGive);
+						player.getInventory().remove(sellingStack);
 						player.updateInventory();
 						player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.5F);
 						player.sendMessage(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "SOLD: " + ChatColor.DARK_GREEN.toString() + quantityFound + "x " + sellingMaterial.name() + ChatColor.AQUA.toString() + " for $" + plugin.moneyFormat.format(newAmountToGive));
